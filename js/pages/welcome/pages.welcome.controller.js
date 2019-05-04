@@ -9,7 +9,7 @@
     .controller('WelcomePageCtrl', WelcomePageCtrl);
 
   /** @ngInject */
-  function WelcomePageCtrl($scope, $location, PageService, UserService, staticFileUrlService) {
+  function WelcomePageCtrl($scope, $location, $window, PageService, UserService, staticFileUrlService) {
     var ctrl = this;
 
     PageService.updatePageData({
@@ -17,7 +17,7 @@
       loading: false
     });
 
-    $scope.$on('user:signIn:complete', function( ) {
+    $scope.$on('user:signIn:complete', function() {
       $location.path('/');
     });
 
@@ -27,12 +27,13 @@
     ctrl.static = staticFileUrlService;
 
     function logIn() {
-      UserService
-        .getUser(false)
-        .then(function() {
-          var nextUrl = $location.search().next || '/';
-          $location.url(nextUrl);
-        });
+      var win = $window.open('http://localhost:3000/api/users/auth/google_oauth2?destination=/close.html', 'Montage Login'); // FIXME: Add host to config
+      var timer = $window.setInterval(function() {
+        if (win.closed) {
+          $window.clearInterval(timer);
+          $window.location.assign($window.location.href);
+        }   
+      }, 500);
     }
   }
 }());

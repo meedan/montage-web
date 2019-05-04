@@ -8,6 +8,7 @@
 		var endpoint = 'project';
 
 		var projectModel = DS.defineResource({
+      basePath: 'http://localhost:3000/_ah/api/greenday/v1', // FIXME: Add host to config
 			name: endpoint,
 			relations: {
 				hasMany: {
