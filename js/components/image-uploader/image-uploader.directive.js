@@ -28,9 +28,9 @@
 
 			ctrl.$scope = $scope;
 			ctrl.loading = false;
-			ctrl.uploadProgress = 0;
-
-			ctrl.showFileDialog = function () {
+			ctrl.url = null;
+			
+      ctrl.showFileDialog = function () {
 				$input.trigger('click');
 			};
 
@@ -77,29 +77,13 @@
 				return;
 			}
 
-			ctrl.loading = true;
-			ctrl.$scope.isBusy = true;
-			ctrl.$scope.$apply();
-
-			ImageUploader
-				.upload(fileData, onProgress.bind(ctrl), ctrl.$scope.type)
-				.then(function (response) {
-					ToastService.show('Image uploaded', true);
-					ctrl.$scope.ngModel = response.url;
-					ctrl.uploadProgress = 0;
-				}, function (err) {
-					ToastService.showError('Error: ' + err, 0);
-				})
-				.finally(function () {
-					ctrl.loading = false;
-					ctrl.$scope.isBusy = false;
-				});
-		}
-
-		function onProgress(progress) {
-			var ctrl = this;
-			ctrl.uploadProgress = progress;
-			ctrl.$scope.$apply();
+      var url = URL.createObjectURL(fileData);
+			ToastService.show('Image uploaded', true);
+			ctrl.$scope.ngModel = url;
+			ctrl.loading = false;
+			ctrl.url = url;
+			ctrl.$scope.isBusy = false;
+      ctrl.$scope.$apply();
 		}
 	}
 }());
