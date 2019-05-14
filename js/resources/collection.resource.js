@@ -6,6 +6,7 @@
 	/** @ngInject */
 	function CollectionModel($timeout, DS, DSHttpAdapter, API_BASE_URL, PageService, VideoModel, _) {
 		var collectionModel = DS.defineResource({
+      basePath: 'http://localhost:3000/_ah/api/greenday/v1', // FIXME: Add host to config
 			name: 'collection',
 			relations: {
 				belongsTo: {
