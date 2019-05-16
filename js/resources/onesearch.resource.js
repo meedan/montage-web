@@ -67,16 +67,6 @@
 				hasRecordedDate = filters.date && filters.date.match(/^recorded_date/),
 				hasLocation = filters.location && (filters.location === 'true' || filters.location === 'false');
 
-			if (!isLoadMore) {
-				ytNextPageToken = null;
-
-				// Clear the videos before doing the new request
-				OneSearchVideoModel.ejectAll();
-
-				oneSearchPromise = doOneSearch(filters);
-				promises.push(oneSearchPromise);
-			}
-
 			if (!filters.tag_ids && !hasRecordedDate && !hasLocation) {
 				ytSearchPromise = doYoutubeSearch(filters);
 				promises.push(ytSearchPromise);

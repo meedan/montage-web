@@ -17,29 +17,26 @@
 
 		return service;
 
-		//////////////////////
-
-		function loadClient() {
-			return GapiLoader.load().then(function (winGapi) {
-				gapi = winGapi;
-				return gapi.client.load('youtube', 'v3');
-			});
-		}
-
 		function request(endpoint, method, requestParams) {
-			var client = loadClient();
 			var dfd = $q.defer();
 
-			client.then(function() {
-				var request = gapi.client.youtube[endpoint][method](requestParams);
-				request.execute(function (response) {
-					if (response.code === 401) {
-						dfd.reject(response);
-					} else {
-						dfd.resolve(response);
-					}
-				});
-			});
+			GapiLoader.load().then(function(winGapi) {
+        gapi = winGapi;
+        gapi.client.init({
+          'apiKey': window.YOUTUBE_API_DEVELOPER_KEY,
+        }).then(function() {
+				  gapi.client.load('youtube', 'v3').then(function() {
+				    var request = gapi.client.youtube[endpoint][method](requestParams);
+				    request.execute(function (response) {
+				    	if (response.code === 401) {
+				    		dfd.reject(response);
+				    	} else {
+				    		dfd.resolve(response);
+				    	}
+				    });
+          });
+			  });
+      });
 
 			return dfd.promise;
 		}

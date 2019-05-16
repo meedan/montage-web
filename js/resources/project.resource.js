@@ -42,7 +42,7 @@
 				addVideos: function (youtubeIds) {
 					var self = this,
 						params = [
-							API_BASE_URL,
+							'http://localhost:3000/_ah/api/greenday/v1', // FIXME: Add host to config
 							'project', this.id,
 							'video',
 							'batch-create'

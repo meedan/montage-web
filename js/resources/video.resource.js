@@ -7,6 +7,7 @@
 	function VideoResource(_, DS, DSHttpAdapter, moment, FilterUtils, API_BASE_URL, COMPOUND_KEY_SEPARATOR, getEndpoint) {
 
 		var videoModel = DS.defineResource({
+      basePath: 'http://localhost:3000/_ah/api/greenday/v1', // FIXME: Add host to config
 			name: 'video',
 			idAttribute: 'c_id',
 			relations: {
