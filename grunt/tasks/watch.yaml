@@ -8,15 +8,15 @@ scss:
   files:
     - '**/*.scss'
   tasks:
-    - 'sass:dev'
-    - 'autoprefixer:dev'
-    - 'notify:sass'
+    - 'build'
 
 css:
   options:
     cwd: '<%= paths.staticDevRoot %>/css'
   files:
     - '**/*.css'
+  tasks:
+    - 'build'
 
 js:
   options:
@@ -25,8 +25,7 @@ js:
     - '**/*.js'
     - '!app/app.templates.js'
   tasks:
-    - 'jshint:dev'
-    # - 'karma:unit:run'
+    - 'build'
 
 templates:
   options:
@@ -34,8 +33,7 @@ templates:
   files:
     - '**/*.html'
   tasks:
-    - 'ngtemplates'
-    - 'notify:templates'
+    - 'build'
 
 sprites:
   options:
@@ -43,7 +41,7 @@ sprites:
   files:
     - '**/*.{jpg,jpeg,gif,png}'
   tasks:
-    - 'glue:dev'
+    - 'build'
 
 index:
   options:
@@ -51,4 +49,4 @@ index:
   files:
     - 'index.html'
   tasks:
-    - 'useminlist:html'
+    - 'build'

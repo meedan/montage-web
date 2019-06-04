@@ -1,9 +1,6 @@
 FROM ubuntu
 MAINTAINER Meedan <sysops@meedan.com>
 
-WORKDIR /app
-COPY . /app
-
 RUN apt-get update && apt-get install wget git python python-pip -y
 RUN pip install glue
 ENV NVM_DIR /usr/local/nvm
@@ -17,14 +14,21 @@ RUN mkdir /usr/local/nvm \
 
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:/usr/local/bin:$PATH
-RUN npm -g install grunt-cli karma-cli bower jshint \
-    && npm install \
-    && bower --allow-root install \
-    && grunt build
+RUN npm -g install grunt-cli karma-cli bower jshint
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
-ENV PATH /app/bin:$PATH
+WORKDIR /app
+COPY . /app
 
+RUN mkdir /tmp/git && git init /tmp/git && GIT_DIR=/tmp/git bower --allow-root install && grunt build
+
+COPY ./docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 EXPOSE 8080
-
-COPY ./docker-entrypoint.sh /app
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+CMD ["/docker-entrypoint.sh"]
