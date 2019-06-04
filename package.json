@@ -6,7 +6,9 @@
     "authenticate": "grunt authenticate",
     "test:frontend": "grunt karma:unitSingle",
     "test": "npm run test:frontend && npm run test:backend",
-    "publish": "node server.js"
+    "publish": "node server.js",
+    "build": "grunt build",
+    "build:dev": "grunt watch"
   },
   "devDependencies": {
     "express": "^4.14.0",
