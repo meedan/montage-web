@@ -4,3 +4,4 @@ config.js
 src/libs
 src/css
 build
+.tmp
