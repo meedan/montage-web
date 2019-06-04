@@ -1,0 +1,25 @@
+images:
+  src: '<%= paths.staticDevRoot %>/img/*.{jpg,jpeg,gif,png,svg}'
+  dest: '<%= paths.staticDistRoot %>/img/'
+  expand: true
+  flatten: true
+
+fonts:
+  src: '<%= paths.staticDevRoot %>/fonts/**/*.{woff,eot,ttf,svg}'
+  dest: '<%= paths.staticDistRoot %>/fonts/'
+  expand: true
+  flatten: true
+
+config:
+  src: '<%= paths.rootPath %>/config.js'
+  dest: '<%= paths.staticDistRoot %>/'
+  expand: true
+  flatten: true
+
+index:
+  src: '<%= paths.staticDevRoot %>/templates/index-static.html'
+  dest: '<%= paths.staticDistRoot %>/index.html'
+
+app:
+  src: '<%= paths.tmp %>/concat/js/app.js'
+  dest: '<%= paths.staticDistRoot %>/js/app.js'

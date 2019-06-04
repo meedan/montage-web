@@ -1,0 +1,9 @@
+const config = {
+  api_host: 'http://localhost:3000',
+  api_base: 'http://localhost:3000/_ah/api/greenday/v1',
+  client_id: 'youtube_client_id',
+  api_key: 'youtube_api_key',
+  channels_api_base: 'channels_api_base',
+  youtube_api_developer_key: 'youtube_api_developer_key'
+};
+window.config = config;

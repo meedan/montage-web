@@ -1,0 +1,2 @@
+devServer:
+  command: 'npm run publish'

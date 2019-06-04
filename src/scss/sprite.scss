@@ -1,0 +1,37 @@
+﻿.map-pin,
+.map-pin-small-yellow {
+	background-image: url('../img/sprite.png');
+	background-repeat: no-repeat;
+}
+
+.map-pin {
+	background-position: 0 0;
+	height: 36px;
+	width: 48px;
+}
+
+.map-pin-small-yellow {
+	background-position: -48px 0;
+	height: 26px;
+	width: 35px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 1.0), screen and (min--moz-device-pixel-ratio: 1.0), screen and (-o-min-device-pixel-ratio: 100/100), screen and (min-device-pixel-ratio: 1.0), screen and (min-resolution: 1.0dppx) {
+	.map-pin,
+	.map-pin-small-yellow {
+		background-image: url('../img/sprite.png');
+		-moz-background-size: 83px 36px;
+		-webkit-background-size: 83px 36px;
+		background-size: 83px 36px;
+	}
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2.0), screen and (min--moz-device-pixel-ratio: 2.0), screen and (-o-min-device-pixel-ratio: 200/100), screen and (min-device-pixel-ratio: 2.0), screen and (min-resolution: 2.0dppx) {
+	.map-pin,
+	.map-pin-small-yellow {
+		background-image: url('../img/sprite@2x.png');
+		-moz-background-size: 83px 36px;
+		-webkit-background-size: 83px 36px;
+		background-size: 83px 36px;
+	}
+}

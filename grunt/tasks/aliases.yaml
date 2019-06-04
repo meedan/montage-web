@@ -1,0 +1,34 @@
+default:
+  - 'dev'
+  - 'watch'
+
+server:
+  - 'dev'
+  - 'concurrent:watch'
+
+dev:
+  - 'useminlist:html'
+  - 'glue:dev'
+  - 'sass:dev'
+  - 'autoprefixer:dev'
+  - 'jshint:dev'
+  - 'ngtemplates'
+  # - 'karma:unit:start'
+
+build:
+  - 'clean:tmp'
+  - 'jshint:dist'
+  - 'ngtemplates'
+  - 'glue:dist'
+  - 'sass:dist'
+  - 'autoprefixer:dist'
+  - 'useminPrepare'
+  - 'concat:generated'
+  - 'cssmin:generated'
+  - 'ngAnnotate:dist'
+  - 'uglify:js'
+  - 'copy:images'
+  - 'copy:fonts'
+  - 'copy:config'
+  - 'copy:index'
+  - 'clean:tmp'
