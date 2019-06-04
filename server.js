@@ -22,6 +22,7 @@ app.use(function(req, res, next) {
 app.use(serveStatic('build', { index: ['index.html'] }));
 
 app.use(function(req, res, next) {
+  console.log('Requested: ' + req.url);
   res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
