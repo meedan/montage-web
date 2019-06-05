@@ -175,7 +175,6 @@ describe('Unit: Testing services', function () {
 		it('should resolve the promise when calling `onGapiLoaded` function', function (done) {
 			$httpBackend.expectGET('users/me').respond(fakeUser);
 			$httpBackend.expectGET('project').respond(fakeProject);
-			$httpBackend.expectPUT('users/me').respond(fakeUserWithProfile);
 
       var mockDeferred = $q.defer();
 

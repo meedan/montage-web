@@ -1,0 +1,25 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+- 8.11.4
+cache:
+  directories:
+  - node_modules
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get install wget git python python-pip libfontconfig -y
+- sudo pip install glue
+- export PATH=/usr/local/bin:$PATH
+- sudo npm -g install grunt-cli karma-cli bower jshint
+- mkdir /tmp/git && git init /tmp/git
+- GIT_DIR=/tmp/git bower --allow-root install
+- grunt build
+before_script:
+- echo 'Starting tests...'
+script: npm run test:unit
+after_script:
+- echo 'Tests finished!'
+notifications:
+  slack:
+    secure: R94TkWCuIUfe6aogvRm5xy8BezccsIqeOEe35EiIb8DYx+bspCMUiETPd7oHtXC5L+2HGtXMJ0DDESqbLcfZHJxWob7sLu/dQGId8T9d6S0Vl7xQE3nsMTuXPi5c5/Y7W9GWnxRNXKb1qUd0JqhtqFq9Ot0TG4YsT0pFrKH17xDnY9GN4Y0YC3PfYFS16FzUWznXOffCX8dBc0e+4TlmbQCDNwAhuH5Lz55FiWbzUf6yv1FgVG/0SZJNXRxwNLsbD9w/xJ6wuGuQmDeYkwnvK+uldPfnQyzbQ0IwMxPf7AwAAQEQ504Q/1oyZ1LTPyCg/+RK8k+C8nlZJW0BQ3PJqhglrd82jdiHdRxg2MLltz4xznvwJZTvcUJUA3/fISOnt/priPNtCT+pnUzEdsodu1aCTTthdV5i0nvqbXbNaobOMFw06L164PJuDrr4dIuaXXP1RM+mpKiaxMfY9pKpo0RTSszuW0u7Xm/plPGcZ5xvSQTouYnUNdshEz1E/POZLfOEm6vJ5qNELFZQwhrVzP0oP1v2tRFUubmAb2jEIqu6pbs0Jn0CWhTtdJIrFQt59nBY5m/5RsRwThHxUCy1jXtLIW5DJoTaOXXfHr+/rypkoC+RXd2sxigv9R/z+LOyYT6QOdNXWK8DweA0KhKzOVdxhGxLbvdHGfXcl0MxTLU=

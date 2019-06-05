@@ -1,7 +1,7 @@
 FROM ubuntu
 MAINTAINER Meedan <sysops@meedan.com>
 
-RUN apt-get update && apt-get install wget git python python-pip -y
+RUN apt-get update && apt-get install wget git python python-pip libfontconfig -y
 RUN pip install glue
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 8.11.4

@@ -13,3 +13,7 @@ A web client for [Montage](https://medium.com/@edbice/montage-open-source-video-
 
 * Build the application: `npm run build`
 * Watch for changes and auto-build the application when files change: `npm run build:dev`
+
+# Tests
+
+* Run the unit tests: `npm run test:unit`

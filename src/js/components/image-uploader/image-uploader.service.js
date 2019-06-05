@@ -27,41 +27,8 @@
 				uploadDeferred.reject('Files must not be larger than 32MB');
 				return uploadPromise;
 			}
-
-
-			UserService.authorizationToken().then(
-				function(token){
-					xhr = new XMLHttpRequest();
-					xhr.open('POST', url, true);
-
-					xhr.setRequestHeader('Content-Type', fileData.type);
-					// xhr.setRequestHeader('Content-Length', fileData.size);
-					xhr.setRequestHeader('Authorization', token);
-
-					if (xhr.upload && onProgress) {
-						xhr.upload.addEventListener('progress', function (evt) {
-							onProgress(parseInt((evt.loaded / evt.total) * 100, 10));
-						});
-					}
-
-					xhr.onreadystatechange = function (e) {
-						if (xhr.readyState === 4) {
-							var response = JSON.parse(e.target.response);
-							if (xhr.status === 200) {
-								uploadDeferred.resolve(response);
-							} else {
-								uploadDeferred.reject(response.message);
-							}
-						}
-					};
-
-					xhr.send(fileData);
-				},
-				function(error) {
-					window.alert('wrnog!' + error);
-				}
-
-			);
+								
+      uploadDeferred.reject('Not implemented yet');
 
 			return uploadPromise;
 		}
