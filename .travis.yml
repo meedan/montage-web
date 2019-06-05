@@ -11,7 +11,7 @@ before_install:
 - sudo apt-get install wget git python python-pip libfontconfig -y
 - sudo pip install glue
 - export PATH=/usr/local/bin:$PATH
-- sudo npm -g install grunt-cli karma-cli bower jshint
+- npm -g install grunt-cli karma-cli bower jshint
 - mkdir /tmp/git && git init /tmp/git
 - GIT_DIR=/tmp/git bower --allow-root install
 - grunt build
