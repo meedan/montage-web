@@ -7,6 +7,7 @@ cache:
   directories:
   - node_modules
 before_install:
+- sudo ln -s /home/travis/build/meedan/montage-web /app
 - sudo apt-get -qq update
 - sudo apt-get install wget git python python-pip libfontconfig -y
 - sudo pip install glue
