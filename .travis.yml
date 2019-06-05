@@ -14,8 +14,8 @@ before_install:
 - npm -g install grunt-cli karma-cli bower jshint
 - mkdir /tmp/git && git init /tmp/git
 - GIT_DIR=/tmp/git bower --allow-root install
-- grunt build
 before_script:
+- grunt build
 - echo 'Starting tests...'
 script: npm run test:unit
 after_script:
