@@ -1,7 +1,7 @@
 FROM ubuntu
 MAINTAINER Meedan <sysops@meedan.com>
 
-RUN apt-get update && apt-get install wget git python python-pip libfontconfig -y
+RUN apt-get update && apt-get install wget git python python-pip libfontconfig rubygems ruby-dev -y
 RUN pip install glue
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 8.11.4
@@ -18,6 +18,9 @@ RUN npm -g install grunt-cli karma-cli bower jshint
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN mkdir -p /app && cp -a /tmp/node_modules /app/
+
+COPY test/Gemfile /app/test/
+RUN cd /app/test && gem install bundler && bundle install --jobs 20 --retry 5 && cd -
 
 WORKDIR /app
 COPY . /app

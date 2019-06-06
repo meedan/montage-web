@@ -5,7 +5,8 @@
   "scripts": {
     "authenticate": "grunt authenticate",
     "test:unit": "grunt karma:unitSingle",
-    "test": "npm run test:frontend && npm run test:backend",
+    "test:integration": "cd test && bundle exec rspec montage_spec.rb && cd ..",
+    "test": "npm run test:unit && npm run test:integration",
     "publish": "node server.js",
     "build": "grunt build",
     "build:dev": "grunt watch"

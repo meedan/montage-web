@@ -1,0 +1,6 @@
+google_user: something@gmail.com
+google_password: password
+google_name: 'User Name'
+chromedriver_url: http://chromedriver:4444/wd/hub
+self_url: http://montage-web.test:18080
+api_path: http://api.test:13000

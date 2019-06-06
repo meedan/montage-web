@@ -17,3 +17,5 @@ A web client for [Montage](https://medium.com/@edbice/montage-open-source-video-
 # Tests
 
 * Run the unit tests: `npm run test:unit`
+* Run the integration tests: `npm run test:integration`
+* Run all tests: `npm run test`

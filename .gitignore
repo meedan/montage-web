@@ -6,3 +6,4 @@ src/css
 build
 .tmp
 target
+test/config.yml
