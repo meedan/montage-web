@@ -1,12 +1,80 @@
 sudo: required
 dist: trusty
 language: node_js
+services:
+- postgresql
 node_js:
 - 8.11.4
 cache:
   directories:
   - node_modules
+  - /tmp/bundler
+addons:
+  postgresql: 9.4
 before_install:
+# extract configs
+- git clone https://${TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
+# apt dependencies
+- sudo rm /etc/apt/sources.list.d/mongodb*
+- sudo apt-get -qq update
+- sudo apt-get install wget python-setuptools lsof unzip imagemagick ruby ruby-dev libnss3 libnss3-dev xvfb libnss3-1d libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+- rvm --default use 2.3.4
+# environment
+- export PATH=/tmp/bundler/ruby/2.3.0/bin:$PATH
+- export GEM_PATH=/tmp/bundler/ruby/2.3.0/gems:$GEM_PATH
+# check api
+- export TEST_ENV_NUMBER=0
+- psql -c 'create database checkdesk_test0;' -U postgres
+- redis-server 2>&1 >/dev/null &
+- wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb
+- wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb.sha512
+  && shasum -a 512 -c elasticsearch-6.3.1.deb.sha512 && sudo dpkg -i --force-confnew elasticsearch-6.3.1.deb && sudo service elasticsearch
+  restart
+- sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
+- sudo service elasticsearch restart
+- until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
+- curl --silent -XPUT http://localhost:9200/check_api_tests0
+- sudo service elasticsearch status
+- export CHECK_API_BRANCH=$((git ls-remote --exit-code --heads https://github.com/meedan/check-api.git $TRAVIS_BRANCH >/dev/null && echo $TRAVIS_BRANCH) || echo 'develop')
+- echo "Using branch $CHECK_API_BRANCH for Check API"
+- git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
+- d=configurator/$APP/travis/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
+- cd check-api
+- bundle install --path=/tmp/bundler
+- bundle exec rake db:migrate RAILS_ENV=test
+- bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
+- bundle exec sidekiq -L log/sidekiq.log -d
+- bundle exec thin -p 3000 -e test -t 60 --threadpool-size=60 --threaded start >/dev/null &
+- cd -
+- export RAILS_ENV=development
+# pender
+- git clone https://github.com/meedan/pender.git
+- d=configurator/$APP/travis/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+- cd pender
+- bundle install --path=/tmp/bundler
+- bundle exec rake db:migrate
+- bundle exec rails runner 'a = ApiKey.create!; a.access_token = "test"; a.save!'
+- bundle exec rails s -p 3005 >/dev/null &
+- cd -
+# xvfb
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+# google chrome
+- sudo apt-get -qq update
+- sudo apt-get install chromium-browser -y
+- export CHROME_BIN=/usr/bin/chromium-browser
+- chromium-browser --no-sandbox &
+# chromedriver
+- wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
+- unzip chromedriver_linux64.zip
+- sudo mv chromedriver /usr/local/bin
+- sudo chmod a+x /usr/local/bin/chromedriver
+- chromedriver --port=4444 >/dev/null 2>/dev/null &
+# ruby / bundler / rspec
+- cd test && bundle install --path=/tmp/bundler && cd -
+# config files
+- d=configurator/$APP/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+# specific dependencies for montage
 - sudo ln -s /home/travis/build/meedan/montage-web /app
 - sudo apt-get -qq update
 - sudo apt-get install wget git python python-pip libfontconfig -y
@@ -16,9 +84,11 @@ before_install:
 - mkdir /tmp/git && git init /tmp/git
 - GIT_DIR=/tmp/git bower --allow-root install
 before_script:
-- grunt build
-- echo 'Starting tests...'
-script: npm run test:unit
+- npm run build
+- export SERVER_PORT=8080
+- npm run publish &
+- sleep 5
+script: npm run test
 after_script:
 - echo 'Tests finished!'
 notifications:
