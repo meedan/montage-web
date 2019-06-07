@@ -38,8 +38,9 @@ before_install:
 - export CHECK_API_BRANCH=$((git ls-remote --exit-code --heads https://github.com/meedan/check-api.git $TRAVIS_BRANCH >/dev/null && echo $TRAVIS_BRANCH) || echo 'develop')
 - echo "Using branch $CHECK_API_BRANCH for Check API"
 - git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
-- d=configurator/$APP/travis/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
+- d=configurator/check/travis/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
 - cd check-api
+- echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
 - bundle install --path=/tmp/bundler
 - bundle exec rake db:migrate RAILS_ENV=test
 - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
@@ -49,7 +50,7 @@ before_install:
 - export RAILS_ENV=development
 # pender
 - git clone https://github.com/meedan/pender.git
-- d=configurator/$APP/travis/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+- d=configurator/check/travis/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
 - cd pender
 - bundle install --path=/tmp/bundler
 - bundle exec rake db:migrate
@@ -63,17 +64,17 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install chromium-browser -y
 - export CHROME_BIN=/usr/bin/chromium-browser
-- chromium-browser --no-sandbox &
+- chromium-browser &
 # chromedriver
 - wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
 - unzip chromedriver_linux64.zip
 - sudo mv chromedriver /usr/local/bin
 - sudo chmod a+x /usr/local/bin/chromedriver
-- chromedriver --port=4444 >/dev/null 2>/dev/null &
+- chromedriver --port=9517 >/dev/null 2>/dev/null &
 # ruby / bundler / rspec
 - cd test && bundle install --path=/tmp/bundler && cd -
 # config files
-- d=configurator/$APP/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+- d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
 # specific dependencies for montage
 - sudo ln -s /home/travis/build/meedan/montage-web /app
 - sudo apt-get -qq update

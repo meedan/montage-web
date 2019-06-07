@@ -20,7 +20,7 @@ RUN cd /tmp && npm install
 RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 COPY test/Gemfile /app/test/
-RUN cd /app/test && gem install bundler && bundle install --jobs 20 --retry 5 && cd -
+RUN cd /app/test && gem install bundler -v "< 2.0" && bundle install --jobs 20 --retry 5 && cd -
 
 WORKDIR /app
 COPY . /app

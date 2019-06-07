@@ -11,20 +11,33 @@ module MontageSpecHelpers
     sleep 5
     fill_field 'input[name=password]', config['google_password']
     click_on_element '#passwordNext'
+    sleep 10
     wait_for_text('Welcome, ' + config['google_name'])
   end
 
   def login_montage
-    login_google
+    login_google unless File.exist?('./cookies.csv')
     @driver.navigate.to config['self_url']
+    sleep 10
     click_on_element '.btn-log-in'
     sleep 3
     window = @driver.window_handles.last
     @driver.switch_to.window(window)
+    if File.exist?('./cookies.csv') 
+      url = @driver.current_url.to_s
+      File.readlines('./cookies.csv').each do |line|
+        fields = line.chomp.split(',')
+        @driver.manage.add_cookie name: fields[5], value: fields[6], path: fields[2], secure: (fields[1] == 'TRUE'), domain: fields[0]
+      end
+      @driver.navigate.to url
+    end
+    sleep 10
     click_on_element '#profileIdentifier'
-    sleep 3
+    sleep 10
     window = @driver.window_handles.first
     @driver.switch_to.window(window)
+    @driver.navigate.to config['self_url']
+    sleep 10
     if element_exists? '.nda_button'
       click_on_element '.nda_button'
       click_on_element '.nda_button'
@@ -57,7 +70,7 @@ module MontageSpecHelpers
     elements
   end
 
-  def element_exists?(selector, type = :css, wait = 10)
+  def element_exists?(selector, type = :css, wait = 30)
     sleep wait
     element = nil
     begin
@@ -97,5 +110,21 @@ module MontageSpecHelpers
         raise e
       end
     end
+  end
+
+  def save_screenshot(title)
+    require 'imgur'
+    path = '/tmp/' + (0...8).map{ (65 + rand(26)).chr }.join + '.png'
+    @driver.save_screenshot(path)
+
+    client = Imgur.new(config['imgur_client_id'])
+    image = Imgur::LocalImage.new(path, title: title)
+    uploaded = client.upload(image)
+    uploaded.link
+  end
+
+  def console_logs
+    require 'pp'
+    @driver.manage.logs.get('browser').pretty_inspect
   end
 end

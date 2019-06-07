@@ -8,13 +8,18 @@ describe 'montage' do
   include MontageSpecHelpers
   include ApiSpecHelpers
   
-  before :each do
-    caps = Selenium::WebDriver::Remote::Capabilities.chrome
-    @driver = Selenium::WebDriver.for :remote, url: config['chromedriver_url'], desired_capabilities: caps
+  before :each do |example|
+    caps_opts = { 'chromeOptions' => { 'args' => ['--incognito'] } }
+    caps = Selenium::WebDriver::Remote::Capabilities.chrome(caps_opts)
+    @driver = Selenium::WebDriver.for :chrome, url: config['chromedriver_url'], desired_capabilities: caps
   end
 
-  after :each do
-    @driver.close
+  after :each do |example|
+    if example.exception
+      link = save_screenshot("Test failed: #{example.description}")
+      puts "Test \"#{example.description}\" failed! Screenshot is #{link} and browser console output is #{console_logs}."
+    end
+    @driver.quit
   end
 
   context 'web' do

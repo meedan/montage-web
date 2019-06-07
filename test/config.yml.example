@@ -4,3 +4,4 @@ google_name: 'User Name'
 chromedriver_url: http://chromedriver:4444/wd/hub
 self_url: http://montage.test:18080
 api_path: http://api.test:13000
+imgur_client_id:
