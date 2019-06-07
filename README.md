@@ -1,5 +1,7 @@
 # Montage Web
 
+[![Build Status](https://travis-ci.org/meedan/montage-web.svg?branch=develop)](https://travis-ci.org/meedan/montage-web)
+
 A web client for [Montage](https://medium.com/@edbice/montage-open-source-video-annotation-at-meedan-743f9dea849).
 
 # Usage
