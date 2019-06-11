@@ -29,10 +29,6 @@ test:
   script:
     - apt-get -qq update
     - apt-get install wget python-setuptools lsof unzip imagemagick ruby ruby-dev libnss3 libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
-    - rvm --default use 2.3.4
-    # environment
-    - export PATH=/tmp/bundler/ruby/2.3.0/bin:$PATH
-    - export GEM_PATH=/tmp/bundler/ruby/2.3.0/gems:$GEM_PATH
     # check api
     - export TEST_ENV_NUMBER=0
     - psql -c 'create database checkdesk_test0;' -U postgres
@@ -47,8 +43,9 @@ test:
     - curl --silent -XPUT http://localhost:9200/check_api_tests0
     - service elasticsearch status
     - export CHECK_API_BRANCH=$((git ls-remote --exit-code --heads https://github.com/meedan/check-api.git $TRAVIS_BRANCH >/dev/null && echo $TRAVIS_BRANCH) || echo 'develop')
-    #- echo "Using branch $CHECK_API_BRANCH for Check API"
-    - git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
+    # - echo "Using branch $CHECK_API_BRANCH for Check API"
+    - git clone https://github.com/meedan/check-api.git
+    # - git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
     - d=configurator/check/travis/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
     - cd check-api
     - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
