@@ -22,6 +22,10 @@ test:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
   services:
     - postgres:9.4
+  variables:
+    POSTGRES_DB: checkdesk_test0
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
   tags:
     - meedan
     - meedan-labs
@@ -31,7 +35,6 @@ test:
     - apt-get install wget python-setuptools lsof unzip imagemagick ruby ruby-dev libnss3 libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
     # check api
     - export TEST_ENV_NUMBER=0
-    - psql -c 'create database checkdesk_test0;' -U postgres
     - redis-server 2>&1 >/dev/null &
     - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb
     - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb.sha512
@@ -43,13 +46,13 @@ test:
     - curl --silent -XPUT http://localhost:9200/check_api_tests0
     - service elasticsearch status
     - export CHECK_API_BRANCH=$((git ls-remote --exit-code --heads https://github.com/meedan/check-api.git $TRAVIS_BRANCH >/dev/null && echo $TRAVIS_BRANCH) || echo 'develop')
-    # - echo "Using branch $CHECK_API_BRANCH for Check API"
+    - echo "Using branch $CHECK_API_BRANCH for Check API"
     - git clone https://github.com/meedan/check-api.git
-    # - git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
-    - d=configurator/check/travis/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
+    - git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
+    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
     - cd check-api
     - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
-    - bundle install --path=/tmp/bundler
+    - bundle install
     - bundle exec rake db:migrate RAILS_ENV=test
     - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
     - bundle exec sidekiq -L log/sidekiq.log -d
