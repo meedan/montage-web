@@ -33,7 +33,10 @@ test:
   stage: test
   script:
     - apt-get -qq update
-    - apt-get install sudo wget python-setuptools libpq-dev lsof zlib1g-dev unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - export DEBIAN_FRONTEND=noninteractive
+    - apt-get install sudo wget python-setuptools libpq-dev lsof tzdata zlib1g-dev unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+    - dpkg-reconfigure --frontend noninteractive tzdata
     - sudo apt-add-repository -y ppa:rael-gc/rvm
     - sudo apt-get update
     - sudo apt-get install rvm -y
@@ -59,7 +62,6 @@ test:
     - cd check-api
     - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
     - bundle install
-    - gem install tzinfo-data
     - bundle exec rake db:migrate RAILS_ENV=test
     - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
     - bundle exec sidekiq -L log/sidekiq.log -d
