@@ -33,7 +33,13 @@ test:
   stage: test
   script:
     - apt-get -qq update
-    - apt-get install sudo wget python-setuptools lsof zlib1g-dev unzip imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - apt-get install sudo wget python-setuptools lsof zlib1g-dev unzip software-properties-commonimagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - sudo apt-add-repository -y ppa:rael-gc/rvm
+    - sudo apt-get update
+    - sudo apt-get install rvm -y
+    - source /etc/profile.d/rvm.sh
+    - rvm install "ruby-2.3.4"
+    - rvm --default use 2.3.4
     # check api
     - export TEST_ENV_NUMBER=0
     - redis-server 2>&1 >/dev/null &
