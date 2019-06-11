@@ -79,7 +79,11 @@ test:
     - cd -
     # xvfb
     - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
+    - export XVFB=/usr/bin/Xvfb
+    - export XVFBARGS=":1 -screen 0 1024x768x24 -ac +extension GLX +render -noreset"
+    - export PIDFILE=/var/run/xvfb.pid
+    - start-stop-daemon --start --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
+    # - sh -e /etc/init.d/xvfb start
     # google chrome
     - apt-get -qq update
     - apt-get install chromium-browser -y
@@ -104,5 +108,10 @@ test:
     - npm -g install grunt-cli karma-cli bower jshint
     - mkdir /tmp/git && git init /tmp/git
     - GIT_DIR=/tmp/git bower --allow-root install
+    - npm run build
+    - export SERVER_PORT=8080
+    - npm run publish &
+    - sleep 5
+    - npm run test
   only:
     - feat/7600-aws-deploy
