@@ -8,3 +8,4 @@ build
 target
 test/config.yml
 test/cookies.csv
+.idea
