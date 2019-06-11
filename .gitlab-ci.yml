@@ -27,7 +27,6 @@ test:
     - meedan-labs
   stage: test
   script:
-    - rm /etc/apt/sources.list.d/mongodb*
     - apt-get -qq update
     - apt-get install wget python-setuptools lsof unzip imagemagick ruby ruby-dev libnss3 libnss3-dev xvfb libnss3-1d libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
     - rvm --default use 2.3.4
