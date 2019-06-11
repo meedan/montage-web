@@ -59,6 +59,7 @@ test:
     - cd check-api
     - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
     - bundle install
+    - gem install tzinfo-data
     - bundle exec rake db:migrate RAILS_ENV=test
     - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
     - bundle exec sidekiq -L log/sidekiq.log -d
