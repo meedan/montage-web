@@ -77,7 +77,7 @@ test:
     - git clone https://github.com/meedan/pender.git
     - d=configurator/check/travis/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
     - cd pender
-    - bundle install --path=/tmp/bundler
+    - bundle install
     - bundle exec rake db:migrate
     - bundle exec rails runner 'a = ApiKey.create!; a.access_token = "test"; a.save!'
     - bundle exec rails s -p 3005 >/dev/null &
@@ -101,7 +101,7 @@ test:
     - chmod a+x /usr/local/bin/chromedriver
     - chromedriver --port=9517 >/dev/null 2>/dev/null &
     # ruby / bundler / rspec
-    - cd test && bundle install --path=/tmp/bundler && cd -
+    - cd test && bundle install && cd -
     # config files
     - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     # specific dependencies for montage
