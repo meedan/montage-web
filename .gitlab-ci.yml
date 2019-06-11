@@ -107,7 +107,7 @@ test:
     - npm -g install grunt-cli karma-cli bower jshint
     - mkdir /tmp/git && git init /tmp/git
     - GIT_DIR=/tmp/git bower --allow-root install
-    - cd /app
+    - npm install
     - npm run build
     - export SERVER_PORT=8080
     - npm run publish &
@@ -115,3 +115,4 @@ test:
     - npm run test
   only:
     - feat/7600-aws-deploy
+
