@@ -33,7 +33,7 @@ test:
   stage: test
   script:
     - apt-get -qq update
-    - apt-get install sudo wget python-setuptools lsof unzip imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - apt-get install sudo wget python-setuptools lsof zlib1g-dev unzip imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
     # check api
     - export TEST_ENV_NUMBER=0
     - redis-server 2>&1 >/dev/null &
