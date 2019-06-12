@@ -106,9 +106,6 @@ test:
     - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     # specific dependencies for montage
     # - ln -s /home/travis/build/meedan/montage-web /app
-    - apt-get -qq update
-    - apt-get install wget git python python-pip libfontconfig -y
-    - pip install glue
     - npm -g install grunt-cli karma-cli bower jshint
     - mkdir /tmp/git && git init /tmp/git
     - GIT_DIR=/tmp/git bower --allow-root install
@@ -118,6 +115,7 @@ test:
     - export SERVER_PORT=8080
     - npm run publish &
     - sleep 5
+    - ls test
     - npm run test
   only:
     - feat/7600-aws-deploy
