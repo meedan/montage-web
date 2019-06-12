@@ -69,7 +69,7 @@ test:
     - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
     - bundle exec sidekiq -L log/sidekiq.log -d
     - bundle exec thin -p 3000 -e test -t 60 --threadpool-size=60 --threaded start >/dev/null &
-    - cd -
+    - cd ..
     - export RAILS_ENV=development
     # pender
     - git clone https://github.com/meedan/pender.git
@@ -79,7 +79,7 @@ test:
     - bundle exec rake db:migrate
     - bundle exec rails runner 'a = ApiKey.create!; a.access_token = "test"; a.save!'
     - bundle exec rails s -p 3005 >/dev/null &
-    - cd -
+    - cd ..
     # xvfb
     - export DISPLAY=:99.0
     - export XVFB=/usr/bin/Xvfb
@@ -99,19 +99,17 @@ test:
     - chmod a+x /usr/local/bin/chromedriver
     - chromedriver --port=9517 >/dev/null 2>/dev/null &
     # ruby / bundler / rspec
-    - cd test && bundle install && cd -
+    - cd test && bundle install && cd ..
     # config files
     # specific dependencies for montage
     # - ln -s /home/travis/build/meedan/montage-web /app
     - npm -g install grunt-cli karma-cli bower jshint
     - bower --allow-root install
-    - cd /app
     - npm install
     - npm run build
     - export SERVER_PORT=8080
     - npm run publish &
     - sleep 5
-    - tree
     - npm run test
   only:
     - feat/7600-aws-deploy
