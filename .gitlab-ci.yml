@@ -104,8 +104,7 @@ test:
     # specific dependencies for montage
     # - ln -s /home/travis/build/meedan/montage-web /app
     - npm -g install grunt-cli karma-cli bower jshint
-    - mkdir /tmp/git && git init /tmp/git
-    - GIT_DIR=/tmp/git bower --allow-root install
+    - bower --allow-root install
     - npm install
     - npm run build
     - export SERVER_PORT=8080
