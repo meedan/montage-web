@@ -98,8 +98,9 @@ test:
     - unzip chromedriver_linux64.zip
     - mv chromedriver /usr/local/bin
     - chmod a+x /usr/local/bin/chromedriver
-    - chromedriver --port=4000 >/dev/null 2>/dev/null &
+    #- chromedriver --port=4000 >/dev/null 2>/dev/null &
     # ruby / bundler / rspec
+    - chromedriver --port=4000 &
     - cd test && bundle install && cd ..
     # config files
     # specific dependencies for montage
