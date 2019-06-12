@@ -61,7 +61,6 @@ test:
     #- echo "Using branch $CHECK_API_BRANCH for Check API"
     - git clone https://github.com/meedan/check-api.git
     #- git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
-    - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
     - cd check-api
     - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
