@@ -35,8 +35,9 @@ test:
     - apt-get -qq update
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get install sudo wget python-setuptools libpq-dev lsof tzdata zlib1g-dev unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
-    #- ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
-    #- dpkg-reconfigure --frontend noninteractive tzdata
+    - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
+    - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+    - ls test
     - sudo apt-add-repository -y ppa:rael-gc/rvm
     - sudo apt-get update
     - sudo apt-get install rvm -y
@@ -44,10 +45,8 @@ test:
     - rvm install "ruby-2.3.4"
     - rvm --default use 2.3.4
     # environment
-
     - export PATH=/tmp/bundler/ruby/2.3.0/bin:$PATH
     - export GEM_PATH=/tmp/bundler/ruby/2.3.0/gems:$GEM_PATH
-
     # check api
     - export TEST_ENV_NUMBER=0
     - redis-server 2>&1 >/dev/null &
@@ -103,7 +102,6 @@ test:
     # ruby / bundler / rspec
     - cd test && bundle install && cd -
     # config files
-    - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     # specific dependencies for montage
     # - ln -s /home/travis/build/meedan/montage-web /app
     - npm -g install grunt-cli karma-cli bower jshint
@@ -115,7 +113,6 @@ test:
     - export SERVER_PORT=8080
     - npm run publish &
     - sleep 5
-    - ls test
     - npm run test
   only:
     - feat/7600-aws-deploy
