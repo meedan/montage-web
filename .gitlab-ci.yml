@@ -105,6 +105,7 @@ test:
     # - ln -s /home/travis/build/meedan/montage-web /app
     - npm -g install grunt-cli karma-cli bower jshint
     - bower --allow-root install
+    - cd app/
     - npm install
     - npm run build
     - export SERVER_PORT=8080
