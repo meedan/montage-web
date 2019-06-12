@@ -112,6 +112,6 @@ test:
     - export SERVER_PORT=8080
     - npm run publish &
     - sleep 5
-    - npm run test
+    - npm run test:unit
   only:
     - feat/7600-aws-deploy
