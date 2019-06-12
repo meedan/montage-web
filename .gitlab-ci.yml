@@ -34,7 +34,7 @@ test:
   script:
     - apt-get -qq update
     - export DEBIAN_FRONTEND=noninteractive
-    - apt-get install sudo wget python-setuptools libpq-dev lsof tzdata zlib1g-dev unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - apt-get install sudo wget python-setuptools libpq-dev tree lsof tzdata zlib1g-dev unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     - ls test
@@ -106,12 +106,12 @@ test:
     - npm -g install grunt-cli karma-cli bower jshint
     - mkdir /tmp/git && git init /tmp/git
     - GIT_DIR=/tmp/git bower --allow-root install
-    - cd /app
     - npm install
     - npm run build
     - export SERVER_PORT=8080
     - npm run publish &
     - sleep 5
+    - tree
     - npm run test
   only:
     - feat/7600-aws-deploy
