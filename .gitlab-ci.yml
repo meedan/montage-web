@@ -105,7 +105,7 @@ test:
     # config files
     - d=configurator/check/travis/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     # specific dependencies for montage
-    - ln -s /home/travis/build/meedan/montage-web /app
+    # - ln -s /home/travis/build/meedan/montage-web /app
     - apt-get -qq update
     - apt-get install wget git python python-pip libfontconfig -y
     - pip install glue
