@@ -29,7 +29,7 @@ test:
   script:
     - apk add --no-cache curl wget git py-pip
     - pip install docker-compose==1.23.2
-    - git clone --recurse-submodules https://github.com/meedan/check.git
+    - git clone --recurse-submodules git@github.com:meedan/check.git
     - cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - d=configurator/check; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
