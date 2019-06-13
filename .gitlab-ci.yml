@@ -39,6 +39,9 @@ test:
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     - ls test
+    # xvfb
+    - export DISPLAY=:99.0
+    - Xvfb $DISPLAY -screen 0 1024x768x16 &
     - sudo apt-add-repository -y ppa:rael-gc/rvm
     - sudo apt-get update
     - sudo apt-get install rvm -y
@@ -81,12 +84,6 @@ test:
     - bundle exec rails runner 'a = ApiKey.create!; a.access_token = "test"; a.save!'
     - bundle exec rails s -p 3005 >/dev/null &
     - cd ..
-    # xvfb
-    - export DISPLAY=:99.0
-    - export XVFB=/usr/bin/Xvfb
-    - export XVFBARGS=":1 -screen 0 1024x768x24 -ac +extension GLX +render -noreset"
-    - export PIDFILE=/var/run/xvfb.pid
-    - start-stop-daemon --start --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
     # - sh -e /etc/init.d/xvfb start
     # google chrome
     - apt-get -qq update
