@@ -27,7 +27,7 @@ test:
     - meedan-labs
   stage: test
   script:
-    - apk add --no-cache curl wget git py-pip
+    - apk add --no-cache curl wget git py-pip openssh
     - pip install docker-compose==1.23.2
     - git clone --recurse-submodules git@github.com:meedan/check.git
     - cd check
