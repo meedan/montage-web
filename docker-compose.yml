@@ -1,0 +1,107 @@
+version: "3"
+volumes:
+  esdata:
+  pgdata:
+  redis:
+  minio:
+services:
+  montage-web:
+    image: montage-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    networks:
+      - dev
+
+  elasticsearch:
+    image: meedan/elasticsearch:6.3
+    environment:
+      - "cluster.name=docker-cluster"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m -Dlog4j2.disable.jmx=true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "esdata:/usr/share/elasticsearch/data"
+    networks:
+      - dev
+
+  postgres:
+    image: postgres:9.6
+    command: postgres -c config_file=/etc/postgresql.conf
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./postgresql.conf:/etc/postgresql.conf"
+      - "pgdata:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - dev
+
+  redis:
+    image: redis:5
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redis:/data"
+    networks:
+      - dev
+
+  minio:
+    image: minio/minio
+    command: server /data
+    ports:
+      - "9000:9000"
+    volumes:
+      - "minio:/data"
+    networks:
+      - dev
+
+  api:
+    build: check-api
+    ports:
+      - "3000:3000"
+      - "3300:3300"
+    depends_on:
+      - elasticsearch
+      - postgres
+      - redis
+      - pender
+    volumes:
+      - "./check-api:/app"
+    environment:
+      RAILS_ENV: test
+      SERVER_PORT: 3000
+    networks:
+      - dev
+
+  pender:
+    build: pender
+    shm_size: 1G
+    ports:
+      - "3200:3200"
+      - "9555:9555"
+    volumes:
+      - "./pender:/app"
+    depends_on:
+      - redis
+      - minio
+    environment:
+      RAILS_ENV: development
+      SERVER_PORT: 3200
+    networks:
+      - dev
+
+networks:
+  dev:
+    driver: bridge

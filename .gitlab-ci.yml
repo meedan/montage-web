@@ -19,96 +19,30 @@ stages:
 #    - feat/7600-aws-deploy
 
 test:
-  #image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-  image: registry.gitlab.com/meedan/montage-web:90f1babb688b1128a241132e87e9c329710c4bff
+  image: docker:latest
   services:
-    - postgres:9.4
-  variables:
-    POSTGRES_DB: checkdesk_test0
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
+    - docker:dind
   tags:
     - meedan
     - meedan-labs
   stage: test
   script:
-    - cd /app
-    - apt-get -qq update
-    - export DEBIAN_FRONTEND=noninteractive
-    - apt-get install sudo wget python-setuptools libpq-dev tree lsof tzdata zlib1g-dev libxi6 libgconf-2-4 unzip software-properties-common imagemagick ruby ruby-dev libnss3 openjdk-11-jre-headless libnss3-dev xvfb libexif-dev curl build-essential libssl-dev libappindicator1 fonts-liberation redis-server -y
+    - apk add --no-cache curl wget git py-pip
+    - pip install docker-compose==1.23.2
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
-    - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
-    - ls test
-    # xvfb
-    - export DISPLAY=:99.0
-    - Xvfb $DISPLAY -screen 0 1024x768x16 &
-    - sudo apt-add-repository -y ppa:rael-gc/rvm
-    - sudo apt-get update
-    - sudo apt-get install rvm -y
-    - source /etc/profile.d/rvm.sh
-    - rvm install "ruby-2.3.4"
-    - rvm --default use 2.3.4
-    # environment
-    - export PATH=/tmp/bundler/ruby/2.3.0/bin:$PATH
-    - export GEM_PATH=/tmp/bundler/ruby/2.3.0/gems:$GEM_PATH
-    # check api
-    - export TEST_ENV_NUMBER=0
-    - redis-server 2>&1 >/dev/null &
-    - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb
-    - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.1.deb.sha512 && shasum -a 512 -c elasticsearch-6.3.1.deb.sha512 && sudo dpkg -i --force-confnew elasticsearch-6.3.1.deb && sudo service elasticsearch restart
-    - /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
-    - service elasticsearch restart
-    - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
-    - curl --silent -XPUT http://localhost:9200/check_api_tests0
-    - service elasticsearch status
-    #- export CHECK_API_BRANCH=$((git ls-remote --exit-code --heads https://github.com/meedan/check-api.git $TRAVIS_BRANCH >/dev/null && echo $TRAVIS_BRANCH) || echo 'develop')
-    #- echo "Using branch $CHECK_API_BRANCH for Check API"
     - git clone https://github.com/meedan/check-api.git
-    #- git clone --branch=$CHECK_API_BRANCH https://github.com/meedan/check-api.git
-    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
-    - cd check-api
-    - echo 'Updating configuration...' && sed -i 's/localhost:3333/localhost:8080/g' config/config.yml && (cat config/config.yml | grep checkdesk_client)
-    - bundle install
-    - bundle exec rake db:migrate RAILS_ENV=test
-    - bundle exec rake lapis:api_keys:create_default RAILS_ENV=test
-    - bundle exec sidekiq -L log/sidekiq.log -d
-    - bundle exec thin -p 3000 -e test -t 60 --threadpool-size=60 --threaded start >/dev/null &
-    - cd ..
-    - export RAILS_ENV=development
-    # pender
     - git clone https://github.com/meedan/pender.git
-    - d=configurator/check/travis/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-    - cd pender
-    - bundle install
-    - bundle exec rake db:migrate
-    - bundle exec rails runner 'a = ApiKey.create!; a.access_token = "test"; a.save!'
-    - bundle exec rails s -p 3005 >/dev/null &
-    - cd ..
-    # - sh -e /etc/init.d/xvfb start
-    # google chrome
-    - apt-get -qq update
-    - apt-get install chromium-browser -y
-    - export CHROME_BIN=/usr/bin/chromium-browser
-    - chromium-browser &
-    # chromedriver
-    - wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
-    - unzip chromedriver_linux64.zip
-    - mv chromedriver /usr/local/bin
-    - chmod a+x /usr/local/bin/chromedriver
-    #- chromedriver --port=4000 >/dev/null 2>/dev/null &
-    # ruby / bundler / rspec
-    - chromedriver --port=4000 &
-    - cd test && bundle install && cd ..
-    # config files
-    # specific dependencies for montage
-    # - ln -s /home/travis/build/meedan/montage-web /app
-    - npm -g install grunt-cli karma-cli bower jshint
-    - bower --allow-root install
-    - npm install
-    - npm run build
-    - export SERVER_PORT=8080
-    - npm run publish &
-    - sleep 5
-    - npm run test
+    - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    - cp configurator/check/test/montage-web/elasticsearch.yml ./
+    - cp configurator/check/test/montage-web/postgresql.conf ./
+    - ls
+    - ls pender/config
+    - ls check/config
+    - docker-compose build
+    - docker-compose -f docker-compose.yml  up
+    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
   only:
     - feat/7600-aws-deploy
