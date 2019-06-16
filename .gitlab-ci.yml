@@ -35,7 +35,7 @@ test:
     - git clone https://github.com/meedan/pender.git
     - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
     - cp configurator/check/test/montage-web/elasticsearch.yml ./
     - cp configurator/check/test/montage-web/postgresql.conf ./
     - docker-compose build
