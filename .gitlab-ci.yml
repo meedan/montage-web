@@ -37,9 +37,6 @@ test:
     - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
     - cp configurator/check/test/montage-web/elasticsearch.yml ./
     - cp configurator/check/test/montage-web/postgresql.conf ./
-    - ls
-    - ls pender/config
-    - ls check/config
     - docker-compose build
     - docker-compose -f docker-compose.yml  up
     #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
