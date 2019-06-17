@@ -1,55 +1,83 @@
 stages:
-  - build
   - test
+  - build
+  - deploy
 
-#build_test:
+
+#test:
 #  image: docker:latest
 #  services:
 #    - docker:dind
 #  tags:
 #    - meedan
 #    - meedan-labs
-#  stage: build
+#  stage: test
 #  script:
-#    - apk add --no-cache curl jq python py-pip git
-#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-#    - docker build  -f Dockerfile -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"  .
-#    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+#    - apk add --no-cache curl wget git py-pip
+#    - sysctl -w vm.max_map_count=262144
+#    - pip install docker-compose==1.23.2
+#    - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
+#    - git clone https://github.com/meedan/check-api.git
+#    - git clone https://github.com/meedan/pender.git
+#    - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+#    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+#    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
+#    - cp configurator/check/test/montage-web/elasticsearch.yml ./
+#    - cp configurator/check/test/montage-web/postgresql.conf ./
+#    - docker-compose build
+#    - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
+#    - docker-compose exec -T montage-web apt-get install  -y libgconf2-4 libnss3 xvfb libnss3-dev chromium-browser
+#    - docker-compose exec -T montage-web wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
+#    - docker-compose exec -T montage-web unzip chromedriver_linux64.zip
+#    - docker-compose exec -T montage-web mv chromedriver /usr/local/bin
+#    - docker-compose exec -T montage-web chmod a+x /usr/local/bin/chromedriver
+#    - docker-compose exec -T montage-web bundle install --gemfile test/Gemfile
+#    - docker-compose exec -T montage-web /usr/bin/Xvfb :99 -screen 0 1152x900x8&
+#    - docker-compose exec -T montage-web chromedriver --port=4000  &
+#    - docker-compose exec -T montage-web npm run test
+#    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+#    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
 #  only:
 #    - feat/7600-aws-deploy
 
-test:
+build_qa:
   image: docker:latest
   services:
     - docker:dind
   tags:
     - meedan
     - meedan-labs
-  stage: test
+  stage: build
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   script:
-    - apk add --no-cache curl wget git py-pip
-    - sysctl -w vm.max_map_count=262144
-    - pip install docker-compose==1.23.2
+    - apk add --no-cache curl jq python py-pip git
+    - pip install awscli
+    - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
-    - git clone https://github.com/meedan/check-api.git
-    - git clone https://github.com/meedan/pender.git
-    - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
-    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
-    - cp configurator/check/test/montage-web/elasticsearch.yml ./
-    - cp configurator/check/test/montage-web/postgresql.conf ./
-    - docker-compose build
-    - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
-    - docker-compose exec -T montage-web apt-get install  -y libgconf2-4 libnss3 xvfb libnss3-dev chromium-browser
-    - docker-compose exec -T montage-web wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
-    - docker-compose exec -T montage-web unzip chromedriver_linux64.zip
-    - docker-compose exec -T montage-web mv chromedriver /usr/local/bin
-    - docker-compose exec -T montage-web chmod a+x /usr/local/bin/chromedriver
-    - docker-compose exec -T montage-web bundle install --gemfile test/Gemfile
-    - docker-compose exec -T montage-web /usr/bin/Xvfb :99 -screen 0 1152x900x8&
-    - docker-compose exec -T montage-web chromedriver --port=4000  &
-    - docker-compose exec -T montage-web npm run test
-    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    - d=configurator/check/qa/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+    - docker build  -f Dockerfile -t "$QA_ECR_BASE_URL:$CI_COMMIT_SHA"  .
+    - docker push "$QA_ECR_BASE_URL:$CI_COMMIT_SHA"
+  only:
+    - feat/7600-aws-deploy
+
+
+deploy_qa:
+  image: python:3-alpine
+  stage: deploy
+  tags:
+    - meedan
+    - meedan-labs
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+  script:
+    - apk add --no-cache curl jq python py-pip git
+    - pip install ecs-deploy==1.7.0
+    - ecs deploy ecs-qa  qa-montage-web --image qa-montage-web-c $QA_ECR_BASE_URL:$CI_COMMIT_SHA --timeout -1
+    - echo "new Image was deployed $QA_ECR_BASE_URL:$CI_COMMIT_SHA"
   only:
     - feat/7600-aws-deploy
