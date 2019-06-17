@@ -40,13 +40,14 @@ test:
     - cp configurator/check/test/montage-web/postgresql.conf ./
     - docker-compose build
     - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
-    - docker-compose exec -T montage-web apt-get install  -y libgconf2-4 libnss3 libnss3-dev chromium-browser
+    - docker-compose exec -T montage-web apt-get install  -y libgconf2-4 libnss3 xvfb libnss3-dev chromium-browser
     - docker-compose exec -T montage-web wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
     - docker-compose exec -T montage-web unzip chromedriver_linux64.zip
     - docker-compose exec -T montage-web mv chromedriver /usr/local/bin
     - docker-compose exec -T montage-web chmod a+x /usr/local/bin/chromedriver
     - docker-compose exec -T montage-web bundle install --gemfile test/Gemfile
-    - docker-compose exec -T montage-web chromedriver --port=4000 &
+    - docker-compose exec -T montage-web /usr/bin/Xvfb :99 -screen 0 1152x900x8&
+    - docker-compose exec -T montage-web chromedriver --port=4000  &
     - docker-compose exec -T montage-web npm run test
     #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
     #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
