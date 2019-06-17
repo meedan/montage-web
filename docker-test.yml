@@ -1,0 +1,5 @@
+version: "3"
+services:
+  montage-web:
+    environment:
+      NODE_ENV: development
