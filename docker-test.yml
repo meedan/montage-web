@@ -154,7 +154,7 @@ services:
   montage.test:
     build: montage-web
     volumes:
-      - ".:/app"
+      - "./montage-web:/app"
       - "/app/node_modules"
       - "/app/src/libs"
       - "/app/build"
