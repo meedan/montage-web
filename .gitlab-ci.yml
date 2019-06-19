@@ -27,7 +27,6 @@ test:
     - d=configurator/check/local/alegre/; for f in $(find $d -type f); do cp "$f" "alegre/${f/$d/}"; done
     - cp configurator/check/test/montage-web/elasticsearch.yml ./
     - cp configurator/check/test/montage-web/postgresql.conf ./
-    - docker-compose build
     - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
     - docker-compose -f docker-compose.yml  -f docker-test.yml exec -T montage.test bundle install --gemfile test/Gemfile
     - docker-compose -f docker-compose.yml  -f docker-test.yml exec -T montage.test npm run test
