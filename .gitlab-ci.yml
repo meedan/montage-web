@@ -24,6 +24,7 @@ test:
     #- git clone https://github.com/meedan/vframe.git
     - git clone -b feat/7600-aws-deploy https://github.com/meedan/montage-web.git
     - d=configurator/check/local/montage-web/; for f in $(find $d -type f); do cp "$f" "montage-web/${f/$d/}"; done
+    - ls montage-web/test
     - d=configurator/check/local/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
     - d=configurator/check/local/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
     #- d=configurator/check/local/alegre/; for f in $(find $d -type f); do cp "$f" "alegre/${f/$d/}"; done
