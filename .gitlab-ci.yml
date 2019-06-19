@@ -4,41 +4,37 @@ stages:
   - deploy
 
 
-#test:
-#  image: docker:latest
-#  services:
-#    - docker:dind
-#  tags:
-#    - meedan
-#    - meedan-labs
-#  stage: test
-#  script:
-#    - apk add --no-cache curl wget git py-pip
-#    - sysctl -w vm.max_map_count=262144
-#    - pip install docker-compose==1.23.2
-#    - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
-#    - git clone https://github.com/meedan/check-api.git
-#    - git clone https://github.com/meedan/pender.git
-#    - d=configurator/check/test/montage-web/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
-#    - d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-#    - d=configurator/check/test/montage-web/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
-#    - cp configurator/check/test/montage-web/elasticsearch.yml ./
-#    - cp configurator/check/test/montage-web/postgresql.conf ./
-#    - docker-compose build
-#    - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
-#    - docker-compose exec -T montage-web apt-get install  -y libgconf2-4 libnss3 xvfb libnss3-dev chromium-browser
-#    - docker-compose exec -T montage-web wget http://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
-#    - docker-compose exec -T montage-web unzip chromedriver_linux64.zip
-#    - docker-compose exec -T montage-web mv chromedriver /usr/local/bin
-#    - docker-compose exec -T montage-web chmod a+x /usr/local/bin/chromedriver
-#    - docker-compose exec -T montage-web bundle install --gemfile test/Gemfile
-#    - docker-compose exec -T montage-web /usr/bin/Xvfb :99 -screen 0 1152x900x8&
-#    - docker-compose exec -T montage-web chromedriver --port=4000  &
-#    - docker-compose exec -T montage-web npm run test
-#    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-#    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
-#  only:
-#    - feat/7600-aws-deploy
+test:
+  image: docker:latest
+  services:
+    - docker:dind
+  tags:
+    - meedan
+    - meedan-labs
+  stage: test
+  script:
+    - apk add --no-cache curl wget git py-pip
+    - sysctl -w vm.max_map_count=262144
+    - pip install docker-compose==1.23.2
+    - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
+    - git clone https://github.com/meedan/check-api.git
+    - git clone https://github.com/meedan/pender.git
+    - git clone https://gitlab.com/meedan/alegre.git
+    - git clone -b feat/7600-aws-deploy https://github.com/meedan/montage-web.git
+    - d=configurator/check/local/montage-web/; for f in $(find $d -type f); do cp "$f" "montage-web/${f/$d/}"; done
+    - d=configurator/check/local/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    - d=configurator/check/local/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
+    - d=configurator/check/local/alegre/; for f in $(find $d -type f); do cp "$f" "alegre/${f/$d/}"; done
+    - cp configurator/check/test/montage-web/elasticsearch.yml ./
+    - cp configurator/check/test/montage-web/postgresql.conf ./
+    - docker-compose build
+    - docker-compose -f docker-compose.yml  -f docker-test.yml up -d
+    - docker-compose -f docker-compose.yml  -f docker-test.yml exec -T montage.test bundle install --gemfile test/Gemfile
+    - docker-compose -f docker-compose.yml  -f docker-test.yml exec -T montage.test npm run test
+    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+    #- d=configurator/check/test/montage-web/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
+  only:
+    - feat/7600-aws-deploy
 
 build_qa:
   image: docker:latest

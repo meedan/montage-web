@@ -1,22 +1,12 @@
-version: "3"
+version: "2.1"
 volumes:
   esdata:
   pgdata:
   redis:
   minio:
+networks:
+  dev:
 services:
-  montage-web:
-    image: montage-web
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - api
-    networks:
-      - dev
-
   elasticsearch:
     image: meedan/elasticsearch:6.3
     environment:
@@ -34,7 +24,6 @@ services:
       - "esdata:/usr/share/elasticsearch/data"
     networks:
       - dev
-
   postgres:
     image: postgres:9.6
     command: postgres -c config_file=/etc/postgresql.conf
@@ -47,7 +36,6 @@ services:
       POSTGRES_PASSWORD: postgres
     networks:
       - dev
-
   redis:
     image: redis:5
     ports:
@@ -56,7 +44,6 @@ services:
       - "redis:/data"
     networks:
       - dev
-
   minio:
     image: minio/minio
     command: server /data
@@ -66,7 +53,6 @@ services:
       - "minio:/data"
     networks:
       - dev
-
   api:
     build: check-api
     ports:
@@ -80,11 +66,10 @@ services:
     volumes:
       - "./check-api:/app"
     environment:
-      RAILS_ENV: test
+      RAILS_ENV: development
       SERVER_PORT: 3000
     networks:
       - dev
-
   pender:
     build: pender
     shm_size: 1G
@@ -95,13 +80,78 @@ services:
       - "./pender:/app"
     depends_on:
       - redis
-      - minio
     environment:
       RAILS_ENV: development
       SERVER_PORT: 3200
     networks:
       - dev
-
-networks:
-  dev:
-    driver: bridge
+  web:
+    build: check-web
+    ports:
+      - "3333:3333"
+    depends_on:
+      - api
+    volumes:
+      - "./check-web:/app"
+      - "./check-api:/api"
+      - "/app/node_modules"
+    environment:
+      PLATFORM: web
+      NODE_ENV: development
+      SERVER_PORT: 3333
+      MODE: development
+    networks:
+      - dev
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.3.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    networks:
+      - dev
+  alegre:
+    build: alegre
+    ports:
+      - "3100:3100"
+    volumes:
+      - "./alegre:/app"
+    depends_on:
+      - kibana
+      - redis
+    environment:
+      BOILERPLATE_ENV: dev
+      ALEGRE_PORT: 3100
+      REDIS_DATABASE: 2
+    networks:
+      - dev
+  vframe:
+    build: vframe
+    volumes:
+      - "./vframe:/root/vframe"
+    env_file:
+      - vframe/.env_file
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+    networks:
+      - dev
+  montage:
+    build: montage-web
+    volumes:
+      - "./montage-web:/app"
+      - "/app/node_modules"
+      - "/app/src/libs"
+      - "/app/build"
+    ports:
+      - "8080:8080"
+    links:
+      - api
+    environment:
+      NODE_ENV: development
+      SERVER_PORT: 8080
+    networks:
+      - dev
