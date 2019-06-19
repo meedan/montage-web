@@ -80,24 +80,24 @@ services:
       SERVER_PORT: 13200
     networks:
       - test
-  web.test:
-    build: check-web
-    ports:
-      - "13333:13333"
-    depends_on:
-      - api.test
-      - chromedriver
-    volumes:
-      - "./check-web:/app"
-      - "./check-api:/api"
-      - "/app/node_modules"
-    environment:
-      PLATFORM: web
-      NODE_ENV: development
-      SERVER_PORT: 13333
-      MODE: test
-    networks:
-      - test
+#  web.test:
+#    build: check-web
+#    ports:
+#      - "13333:13333"
+#    depends_on:
+#      - api.test
+#      - chromedriver
+#    volumes:
+#      - "./check-web:/app"
+#      - "./check-api:/api"
+#      - "/app/node_modules"
+#    environment:
+#      PLATFORM: web
+#      NODE_ENV: development
+#      SERVER_PORT: 13333
+#      MODE: test
+#    networks:
+#      - test
   chromedriver:
     build: chromedriver
     ports:
@@ -122,35 +122,35 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     networks:
       - test
-  alegre.test:
-    build: alegre
-    ports:
-      - "13100:13100"
-    volumes:
-      - "./alegre:/app"
-    depends_on:
-      - kibana
-    environment:
-      BOILERPLATE_ENV: test
-      ALEGRE_PORT: 13100
-      REDIS_DATABASE: 2
-    networks:
-      - test
-  vframe.test:
-    build: vframe
-    volumes:
-      - "./vframe:/root/vframe"
-    env_file:
-      - vframe/.env_file
-    environment:
-      - "DB_NAME=vframe_test"
-      - "FLASK_ENV=test"
-    depends_on:
-      - postgres
-    ports:
-      - "5001:5000"
-    networks:
-      - test
+#  alegre.test:
+#    build: alegre
+#    ports:
+#      - "13100:13100"
+#    volumes:
+#      - "./alegre:/app"
+#    depends_on:
+#      - kibana
+#    environment:
+#      BOILERPLATE_ENV: test
+#      ALEGRE_PORT: 13100
+#      REDIS_DATABASE: 2
+#    networks:
+#      - test
+#  vframe.test:
+#    build: vframe
+#    volumes:
+#      - "./vframe:/root/vframe"
+#    env_file:
+#      - vframe/.env_file
+#    environment:
+#      - "DB_NAME=vframe_test"
+#      - "FLASK_ENV=test"
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "5001:5000"
+#    networks:
+#      - test
   montage.test:
     build: montage-web
     volumes:

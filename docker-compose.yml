@@ -85,23 +85,23 @@ services:
       SERVER_PORT: 3200
     networks:
       - dev
-  web:
-    build: check-web
-    ports:
-      - "3333:3333"
-    depends_on:
-      - api
-    volumes:
-      - "./check-web:/app"
-      - "./check-api:/api"
-      - "/app/node_modules"
-    environment:
-      PLATFORM: web
-      NODE_ENV: development
-      SERVER_PORT: 3333
-      MODE: development
-    networks:
-      - dev
+#  web:
+#    build: check-web
+#    ports:
+#      - "3333:3333"
+#    depends_on:
+#      - api
+#    volumes:
+#      - "./check-web:/app"
+#      - "./check-api:/api"
+#      - "/app/node_modules"
+#    environment:
+#      PLATFORM: web
+#      NODE_ENV: development
+#      SERVER_PORT: 3333
+#      MODE: development
+#    networks:
+#      - dev
   kibana:
     image: docker.elastic.co/kibana/kibana:6.3.0
     ports:
@@ -112,33 +112,33 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     networks:
       - dev
-  alegre:
-    build: alegre
-    ports:
-      - "3100:3100"
-    volumes:
-      - "./alegre:/app"
-    depends_on:
-      - kibana
-      - redis
-    environment:
-      BOILERPLATE_ENV: dev
-      ALEGRE_PORT: 3100
-      REDIS_DATABASE: 2
-    networks:
-      - dev
-  vframe:
-    build: vframe
-    volumes:
-      - "./vframe:/root/vframe"
-    env_file:
-      - vframe/.env_file
-    depends_on:
-      - postgres
-    ports:
-      - "5000:5000"
-    networks:
-      - dev
+#  alegre:
+#    build: alegre
+#    ports:
+#      - "3100:3100"
+#    volumes:
+#      - "./alegre:/app"
+#    depends_on:
+#      - kibana
+#      - redis
+#    environment:
+#      BOILERPLATE_ENV: dev
+#      ALEGRE_PORT: 3100
+#      REDIS_DATABASE: 2
+#    networks:
+#      - dev
+#  vframe:
+#    build: vframe
+#    volumes:
+#      - "./vframe:/root/vframe"
+#    env_file:
+#      - vframe/.env_file
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "5000:5000"
+#    networks:
+#      - dev
   montage:
     build: montage-web
     volumes:

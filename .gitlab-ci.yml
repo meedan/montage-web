@@ -18,17 +18,17 @@ test:
     - pip install docker-compose==1.23.2
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - git clone https://github.com/meedan/check-api.git
-    - git clone https://github.com/meedan/check-web.git
+    #- git clone https://github.com/meedan/check-web.git
     - git clone https://github.com/meedan/pender.git
-    - git clone https://gitlab.com/meedan/alegre.git
-    - git clone https://github.com/meedan/vframe.git
+    #- git clone https://gitlab.com/meedan/alegre.git
+    #- git clone https://github.com/meedan/vframe.git
     - git clone -b feat/7600-aws-deploy https://github.com/meedan/montage-web.git
     - d=configurator/check/local/montage-web/; for f in $(find $d -type f); do cp "$f" "montage-web/${f/$d/}"; done
     - d=configurator/check/local/pender/; for f in $(find $d -type f); do cp "$f" "pender/${f/$d/}"; done
     - d=configurator/check/local/check-api/; for f in $(find $d -type f); do cp "$f" "check-api/${f/$d/}"; done
-    - d=configurator/check/local/alegre/; for f in $(find $d -type f); do cp "$f" "alegre/${f/$d/}"; done
-    - d=configurator/check/local/check-web/; for f in $(find $d -type f); do cp "$f" "check-web/${f/$d/}"; done
-    - d=configurator/check/local/vframe/; for f in $(find $d -type f); do cp "$f" "vframe/${f/$d/}"; done
+    #- d=configurator/check/local/alegre/; for f in $(find $d -type f); do cp "$f" "alegre/${f/$d/}"; done
+    #- d=configurator/check/local/check-web/; for f in $(find $d -type f); do cp "$f" "check-web/${f/$d/}"; done
+    #- d=configurator/check/local/vframe/; for f in $(find $d -type f); do cp "$f" "vframe/${f/$d/}"; done
     - cp configurator/check/test/montage-web/elasticsearch.yml ./
     - cp configurator/check/test/montage-web/postgresql.conf ./
     - COMPOSE_HTTP_TIMEOUT=400 docker-compose -f docker-compose.yml  -f docker-test.yml up -d
