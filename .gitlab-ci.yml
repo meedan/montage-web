@@ -17,7 +17,7 @@ test:
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
     - mkdir montage-web-2
-    - cp -r ./* montage-web-2/
+    - cp -R ./* montage-web-2/
     - git clone --recurse-submodules -j8 https://github.com/meedan/check.git
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     - rm -rf montage-web
