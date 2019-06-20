@@ -17,7 +17,7 @@ test:
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
     - mkdir montage-web
-    - cp ./* montage-web
+    - cp -r ./* montage-web
     - cp montage-web/docker-compose.yml ./
     - cp montage-web/docker-test.yml ./
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
