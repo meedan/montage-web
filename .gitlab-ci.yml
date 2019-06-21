@@ -11,11 +11,9 @@ test:
   tags:
     - meedan
     - meedan-labs
-  variables:
-    GIT_SUBMODULE_STRATEGY: none
   stage: test
   script:
-    - apk add --no-cache curl wget git py-pip
+    - apk add --no-cache curl wget git py-pip ca-certificates openssl bash
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
     - git clone --recurse-submodules -j8 https://github.com/meedan/check.git
