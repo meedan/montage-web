@@ -3,17 +3,8 @@ stages:
   - build
   - deploy
 
-before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-  - mkdir -p ~/.ssh
-  - echo "$id_rsa" | tr -d '\r' > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - eval "$(ssh-agent -s)"
-  - ssh-add ~/.ssh/id_rsa
-  - ssh-keyscan -H 'github.com' >> ~/.ssh/known_hosts
-
 test:
-  image: docker:latest
+  image: docker:git
   services:
     - docker:dind
   tags:
@@ -24,6 +15,12 @@ test:
     - apk add --no-cache curl wget git py-pip ca-certificates openssl bash openssh
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
+    - mkdir -p ~/.ssh
+    - echo "$id_rsa" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H 'github.com' >> ~/.ssh/known_hosts
     - ls ~/.ssh
     - git clone --recursive git@github.com:meedan/check.git && cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
