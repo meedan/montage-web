@@ -16,11 +16,9 @@ test:
     - apk add --no-cache curl wget git py-pip ca-certificates openssl bash openssh
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
+    - echo "$id_rsa" | tr -d '\r' | ssh-add - > /dev/null
     - mkdir -p ~/.ssh
-    - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-    - echo $id_rsa_pub >> ~/.ssh/id_rsa.pub
-    - echo $id_rsa >> ~/.ssh/id_rsa
-    - chmod 400 ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh
     - ls ~/.ssh
     - git clone --recursive git@github.com:meedan/check.git && cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
