@@ -16,6 +16,7 @@ test:
     - apk add --no-cache curl wget git py-pip ca-certificates openssl bash openssh
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
+    - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     - echo "$id_rsa" | tr -d '\r' | ssh-add - > /dev/null
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
