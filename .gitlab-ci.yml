@@ -18,7 +18,7 @@ test:
     - pip install docker-compose==1.23.2
     - mkdir -p ~/.ssh
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-    - echo "$id_rsa" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh-add <(echo "$id_rsa")
     - chmod 700 ~/.ssh
     - ls ~/.ssh
     - git clone --recursive git@github.com:meedan/check.git && cd check
