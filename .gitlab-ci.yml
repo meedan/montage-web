@@ -16,12 +16,8 @@ test:
     - apk add --no-cache curl wget git py-pip
     - sysctl -w vm.max_map_count=262144
     - pip install docker-compose==1.23.2
-    - mkdir montage-web-2
-    - cp -R ./* montage-web-2/
     - git clone --recurse-submodules -j8 https://github.com/meedan/check.git
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
-    - rm -rf montage-web
-    - mv montage-web-2 montage-web
     #- git clone https://github.com/meedan/check-api.git
     #- git clone https://github.com/meedan/check-web.git
     #- git clone https://github.com/meedan/pender.git
