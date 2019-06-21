@@ -22,7 +22,7 @@ test:
     - echo $id_rsa >> ~/.ssh/id_rsa
     - chmod 400 ~/.ssh/id_rsa
     - ls ~/.ssh
-    - git clone --recursive https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/check && cd check
+    - git clone --recursive git@github.com:meedan/check.git && cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     #- git clone https://github.com/meedan/check-api.git
     #- git clone https://github.com/meedan/check-web.git
