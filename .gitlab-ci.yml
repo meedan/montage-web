@@ -20,6 +20,7 @@ test:
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     - echo $id_rsa_pub >> ~/.ssh/id_rsa.pub
     - echo $id_rsa >> ~/.ssh/id_rsa
+    - chmod 400 ~/.ssh/id_rsa
     - ls ~/.ssh
     - git clone --recursive https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/check && cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
