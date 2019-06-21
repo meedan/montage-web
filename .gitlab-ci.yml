@@ -18,7 +18,7 @@ test:
     - pip install docker-compose==1.23.2
     - mkdir -p ~/.ssh
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-    - git clone --recurse-submodules git@github.com:meedan/check.git
+    - git clone --recursive git@github.com:meedan/check.git && cd check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     #- git clone https://github.com/meedan/check-api.git
     #- git clone https://github.com/meedan/check-web.git
