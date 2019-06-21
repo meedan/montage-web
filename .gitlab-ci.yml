@@ -18,6 +18,8 @@ test:
     - pip install docker-compose==1.23.2
     - mkdir -p ~/.ssh
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    - eval ssh-agent -s
+    - ssh-add ~/.ssh/id_rsa
     - git clone --recurse-submodules https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/check ./check
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
     #- git clone https://github.com/meedan/check-api.git
