@@ -25,19 +25,23 @@ RUN cd /app/test && gem install bundler -v "< 2.0" && bundle install --jobs 20 -
 
 COPY  docker/nginx.config /etc/nginx/sites-available/montage
 RUN ln -s /etc/nginx/sites-available/montage /etc/nginx/sites-enabled/montage \
-    && rm /etc/nginx/sites-enabled/default
+    && rm /etc/nginx/sites-enabled/default \
+    && rm /etc/nginx/sites-available/default
 WORKDIR /app
 COPY . /app
 
 RUN mkdir /tmp/git && git init /tmp/git && GIT_DIR=/tmp/git bower --allow-root install && grunt build
 
+RUN mkdir -p /var/www/montage.io/logs
+RUN touch /var/www/montage.io/logs/nginx.access.log
 
-EXPOSE 8080
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
-
+EXPOSE 80
 COPY ./docker/start.sh /start.sh
-RUN chmod +x /start.sh
+RUN chmod a+x /start.sh
+WORKDIR /app/build
+
 CMD ["/bin/bash", "-c", "/start.sh"]

@@ -1,7 +1,5 @@
 #!/bin/bash
-set -e
-mkdir -p /var/www/montage.io/logs
-touch /var/www/montage.io/logs/nginx.access.log
-nginx -t
-service nginx restart
-npm run publish
+#service nginx restart
+echo "starting nginx";
+echo "--STARTUP FINISHED--";
+nginx -g 'daemon off;'
