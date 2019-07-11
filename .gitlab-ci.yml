@@ -108,7 +108,7 @@ build_live:
     - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/meedan/configurator ./configurator
-    - d=configurator/check/qa/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
+    - d=configurator/check/live/montage-web/; for f in $(find $d -type f); do cp "$f" "${f/$d/}"; done
     - docker build  -f docker/Dockerfile.production -t "$ECR_BASE_URL/live/montage/web:$CI_COMMIT_SHA"  .
     - docker push "$ECR_BASE_URL/live/montage/web:$CI_COMMIT_SHA"
   only:
