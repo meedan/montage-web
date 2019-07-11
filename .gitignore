@@ -8,3 +8,9 @@ build
 target
 test/config.yml
 test/cookies.csv
+.idea
+check-api
+pender
+configurator
+elasticsearch.yml
+postgresql.conf
