@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" ng-controller="AppCtrl as appctrl" >
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title ng-bind="appctrl.page.headerTitle ? (appctrl.page.headerTitle + ' - Montage') : 'Montage'">Montage</title>
+		<link rel="stylesheet" type="text/css" href="/css/greenday.css">
+		<link rel="shortcut icon" type="image/png" href="//storage.googleapis.com/public_images/montage_favicon-32.png">
+		<link rel="icon" type="image/png" href="//storage.googleapis.com/public_images/montage_favicon-16.png" sizes="16x16">
+		<link rel="icon" type="image/png" href="//storage.googleapis.com/public_images/montage_favicon-32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="//storage.googleapis.com/public_images/montage_favicon-196.png" sizes="196x196">
+		<meta name="google-site-verification" content="nWb6OdpJxKvIQSq3XkDaJ3fNwNSsYxG8_3hviYAKTsU" />
+		<base href="/">
+	</head>
+
+	<body md-theme="default" ng-class="{ 'welcome-page' : appctrl.imOnWelcomePage===true}">
+		<section layout="row" layout-fill ng-cloak>
+			<md-sidenav class="app-sidebar md-sidenav-left md-whiteframe-z2" md-component-id="left" ng-include="'app/app.sidebar.html'"></md-sidenav>
+			<gd-tag-sidebar project-id="appctrl.page.projectId"></gd-tag-sidebar>
+			<gd-project-comments-sidebar project-id="appctrl.page.projectId"></gd-project-comments-sidebar>
+			<md-content flex layout="column" layout-fill>
+				<header class="appbar" ng-if='!appctrl.imOnWelcomePage' data-ng-include="'app/app.header.html'"></header>
+
+				<section class="page" layout="column" flex ng-view></section>
+
+				<section ng-show="appctrl.page.loading" class="page-loader ng-hide fade" layout="column" layout-align="center center">
+					<holo-spinner class="holo-spinner--layer"></holo-spinner>
+				</section>
+			</md-content>
+			<one-search lazy-show="appctrl.searchVisible" selected-project="appctrl.page.project" selected-collection="appctrl.page.collection" class="fade" searching="appctrl.searchVisible" layout-fill></one-search>
+		</section>
+		<gd-onboarding-popover ng-model="appctrl.page.onboarding"></gd-onboarding-popover>
+
+		<script src="config.js"></script>
+		<script>
+      window.API_HOST = window.config.api_host;
+			window.DEBUG = window.config.debug;
+			window.OAUTH_SETTINGS = {
+				client_id: window.config.client_id,
+				api_key: window.config.api_key
+			};
+			window.CHANNELS_API_BASE = window.config.channels_api_base;
+			window.API_BASE = window.config.api_base;
+      window.YOUTUBE_API_DEVELOPER_KEY = window.config.youtube_api_developer_key;
+		</script>
+		<script src="/js/libs.js"></script>
+		<script src="/js/app.js"></script>
+		<script src="https://www.google.com/jsapi"></script>
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+			ga('create', config.analytics_id);
+		</script>
+	</body>
+</html>

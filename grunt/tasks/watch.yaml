@@ -1,0 +1,52 @@
+options:
+  livereload: true
+
+scss:
+  options:
+    cwd: '<%= paths.staticDevRoot %>'
+    livereload: false
+  files:
+    - '**/*.scss'
+  tasks:
+    - 'build'
+
+css:
+  options:
+    cwd: '<%= paths.staticDevRoot %>/css'
+  files:
+    - '**/*.css'
+  tasks:
+    - 'build'
+
+js:
+  options:
+    cwd: '<%= paths.staticDevRoot %>/js'
+  files:
+    - '**/*.js'
+    - '!app/app.templates.js'
+  tasks:
+    - 'build'
+
+templates:
+  options:
+    cwd: '<%= paths.staticDevRoot %>/js'
+  files:
+    - '**/*.html'
+  tasks:
+    - 'build'
+
+sprites:
+  options:
+    cwd: '<%= paths.staticDevRoot %>/img/sprite'
+  files:
+    - '**/*.{jpg,jpeg,gif,png}'
+  tasks:
+    - 'build'
+
+index:
+  options:
+    cwd: '<%= paths.templates %>'
+  files:
+    - 'index.html'
+  tasks:
+    - 'build'
