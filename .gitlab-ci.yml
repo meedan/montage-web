@@ -60,6 +60,11 @@ build_qa:
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    GH_TOKEN: $GH_TOKEN 
+    APP: montage-web
+    DEPLOY_ENV: development
+
+
   script:
     - export RAILS_ENV="development"
     - apk add --no-cache curl jq python py-pip git
@@ -85,6 +90,10 @@ deploy_qa:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+    GH_TOKEN: $GH_TOKEN 
+    APP: montage-web
+    DEPLOY_ENV: development
+
   script:
     - export RAILS_ENV="development"
     - apk add --no-cache curl jq python py-pip git
@@ -105,6 +114,9 @@ build_live:
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    GH_TOKEN: $GH_TOKEN 
+    APP: montage-web
+    DEPLOY_ENV: production
   script:
     - export RAILS_ENV="production"
     - apk add --no-cache curl jq python py-pip git
@@ -130,6 +142,9 @@ deploy_live:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+    GH_TOKEN: $GH_TOKEN 
+    APP: montage-web
+    DEPLOY_ENV: production
   script:
     - export RAILS_ENV="production"
     - apk add --no-cache curl jq python py-pip git
