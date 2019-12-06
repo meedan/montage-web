@@ -61,6 +61,7 @@ build_qa:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   script:
+    - export RAILS_ENV="development"
     - apk add --no-cache curl jq python py-pip git
     - pip install docutils==0.14
     - pip install awscli==1.16.201
@@ -85,6 +86,7 @@ deploy_qa:
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
   script:
+    - export RAILS_ENV="development"
     - apk add --no-cache curl jq python py-pip git
     - pip install ecs-deploy==1.7.0
     - ecs deploy ecs-qa  qa-montage-web --image qa-montage-web-c $ECR_BASE_URL/qa/montage/web:$CI_COMMIT_SHA --timeout 3600
@@ -104,6 +106,7 @@ build_live:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   script:
+    - export RAILS_ENV="production"
     - apk add --no-cache curl jq python py-pip git
     - pip install docutils==0.14
     - pip install awscli==1.16.201
@@ -128,6 +131,7 @@ deploy_live:
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
   script:
+    - export RAILS_ENV="production"
     - apk add --no-cache curl jq python py-pip git
     - pip install ecs-deploy==1.7.0
     - ecs deploy ecs-live  live-montage-web --image live-montage-web-c $ECR_BASE_URL/live/montage/web:$CI_COMMIT_SHA --timeout 3600
